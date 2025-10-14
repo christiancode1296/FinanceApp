@@ -25,6 +25,29 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// Vue-Projekt liegt unter ../frontend oder frontend
+def frontendDir = "$rootDir/frontend"
+def buildDir = "$frontendDir/dist"
+def staticDir = "$projectDir/src/main/resources/static"
+
+task npmInstall(type: Exec) {
+    workingDir frontendDir
+    commandLine 'npm', 'install'
+}
+
+task npmBuild(type: Exec) {
+    dependsOn npmInstall
+    workingDir frontendDir
+    commandLine 'npm', 'run', 'build'
+}
+
+task copyFrontend(type: Copy) {
+    dependsOn npmBuild
+    from(buildDir)
+    into(staticDir)
+}
+
+processResources.dependsOn copyFrontend
 tasks.named('test') {
 	useJUnitPlatform()
 }
