@@ -1,37 +1,30 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Java / Spring Boot
+/build/
+/out/
+/.gradle/
+/*.iml
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### IntelliJ IDEA ###
-.idea
+# IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
+# VS Code (falls du parallel nutzt)
 .vscode/
+
+# Gradle
+.gradle/
+build/
+
+# Node / Vue
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.env
+
+# Logs
+*.log
+
+# OS-spezifisch
+.DS_Store
+Thumbs.db
