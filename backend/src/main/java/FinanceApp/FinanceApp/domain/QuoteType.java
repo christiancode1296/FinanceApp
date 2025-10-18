@@ -1,4 +1,6 @@
 package FinanceApp.FinanceApp.domain;
 
-public class QuoteType {
+public enum QuoteType {
+    QUOTE,
+    HISTORY
 }

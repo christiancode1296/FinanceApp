@@ -12,11 +12,11 @@
       <span v-if="errorMsg" style="color:#b00;">{{ errorMsg }}</span>
     </div>
 
-    <div style="position: relative; width: 100%; height: 360px;">
+    <div style="position: relative; width: 100%; height: 360px;color: #bb0000">
       <canvas ref="chartCanvas"></canvas>
     </div>
 
-    <h3 style="margin-top:12px;">Letzte Preise:</h3>
+    <h3 style="margin-top:12px;">Letzten Preise:</h3>
     <ul>
       <li v-for="(price, index) in lastPrices" :key="index">
         {{ index + 1 }}. {{ price.toFixed(2) }} USD

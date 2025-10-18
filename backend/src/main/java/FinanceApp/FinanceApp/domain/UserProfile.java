@@ -1,13 +1,13 @@
-package FinanceApp.FinanceApp;
+package FinanceApp.FinanceApp.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,9 +28,19 @@ import java.util.UUID;
 public class UserProfile {
 
     @Id
-    private UUID id;
-    private String oktaUserId; //irgendwie Unique machen
+    @GeneratedValue // uuid wird automnatisch erstellt
+    private UUID id; //Primary
+
+    @Column(unique = true, nullable = false)
+    private String oktaUserId;
+
+    @Column(nullable = false)
     private String email;
-    private Timestamp createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL, orphanRemoval = true) // oneToMany = 1 User mehrere listen, orphansRemoval löscht abhängigkeiten automatisch beim löschen
+    private List<Watchlist> watchlists = new ArrayList<>();
 
 }
