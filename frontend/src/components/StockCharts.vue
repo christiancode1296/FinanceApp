@@ -1,8 +1,19 @@
-<template>
-  <div>
-    <h2>Stocks Chart</h2>
 
-    <div style="margin: 12px 0; display:flex; gap:8px; align-items:center; flex-wrap: wrap;">
+<template xmlns="http://www.w3.org/1999/html">
+
+
+
+  <div class="all" style="background-color: black">
+    <div >
+      <h1 id="ueber">Capital Investments</h1>
+    </div>
+    <div class="background"></div>
+
+    <img  src="../assets/R(1).png" style="width: 150px; height: 150px;" />
+
+
+    <div class="search">
+      <h2>Stocks Charts</h2>
       <label>
         Symbol:
         <input v-model.trim="symbol" @keyup.enter="reload()" placeholder="AAPL" />
@@ -12,17 +23,22 @@
       <span v-if="errorMsg" style="color:#b00;">{{ errorMsg }}</span>
     </div>
 
-    <div style="position: relative; width: 100%; height: 360px;color: #bb0000">
+    <div class="chart">
       <canvas ref="chartCanvas"></canvas>
     </div>
 
+    <div class="last">
     <h3 style="margin-top:12px;">Letzten Preise:</h3>
-    <ul>
-      <li v-for="(price, index) in lastPrices" :key="index">
-        {{ index + 1 }}. {{ price.toFixed(2) }} USD
-      </li>
-    </ul>
+      <ul>
+        <li v-for="(entry, index) in lastPrices" :key="index">
+          {{ entry.date ? formatDate(entry.date) : '-' }} —
+          {{ entry.price != null ? entry.price.toFixed(2) : '-' }} USD
+        </li>
+      </ul>
+    </div>
+
   </div>
+
 </template>
 
 <script>
@@ -119,8 +135,14 @@ export default {
     };
 
     const formatDate = (yyyyMmDd) => {
-      const d = new Date(yyyyMmDd + "T00:00:00Z");
-      return new Intl.DateTimeFormat(undefined, { year: "2-digit", month: "2-digit", day: "2-digit" }).format(d);
+      if (!yyyyMmDd) return "-"; // Falls leer
+      const d = new Date(yyyyMmDd);
+      if (isNaN(d)) return yyyyMmDd; // Wenn kein valides Datum
+      return new Intl.DateTimeFormat(undefined, {
+        year: "2-digit",
+        month: "2-digit",
+        day: "2-digit"
+      }).format(d);
     };
 
     const reload = async () => {
@@ -128,10 +150,30 @@ export default {
       abortController = new AbortController();
       loading.value = true;
       errorMsg.value = "";
+
       try {
         const { labels, values } = await fetchSeries(symbol.value.toUpperCase());
-        lastPrices.value = values.slice(-5).reverse();
-        await renderChart(labels, values);
+
+        // Sicherstellen, dass labels/values gleich lang sind
+        const minLength = Math.min(labels.length, values.length);
+        const validLabels = labels.slice(-minLength);
+        const validValues = values.slice(-minLength);
+
+        // Letzte 5 gültige Datensätze
+        const lastEntries = validLabels
+            .map((date, i) => {
+              const price = validValues[i];
+              return price !== undefined && !isNaN(price)
+                  ? { date, price }
+                  : null;
+            })
+            .filter(Boolean)
+            .slice(-5)
+            .reverse();
+
+        lastPrices.value = lastEntries;
+
+        await renderChart(validLabels, validValues);
       } catch (e) {
         errorMsg.value = e.message || String(e);
         await renderChart([], []);
@@ -139,6 +181,7 @@ export default {
         loading.value = false;
       }
     };
+
 
     const renderChart = async (labels, values) => {
       const Chart = await loadChartJs();
@@ -153,6 +196,11 @@ export default {
               label: symbol.value,
               data: values,
               tension: 0.2,
+              borderColor: '#d40000', // Linienfarbe
+              backgroundColor: 'rgba(255,0,0,0.3)', // Fläche unter der Linie
+              pointBackgroundColor: '#ffffff', // Punkte
+              fill: false, // Fläche unter der Linie ja nein
+              borderWidth: 2,
             },
           ],
         },
@@ -191,11 +239,24 @@ export default {
       if (chart) chart.destroy();
     });
 
-    return { symbol, chartCanvas, errorMsg, loading, lastPrices, reload };
+    return { symbol, chartCanvas, errorMsg, loading, lastPrices, reload, formatDate };
   },
 };
 </script>
 
 <style scoped>
-canvas { width: 100%; height: 100%; }
+
+.all {position: relative;color : white;z-index: 0 }
+
+.chart {position: relative; width: 500px; height: 300px;z-index: 1}
+
+.search {margin: 12px 0; gap:8px; align-items:center;z-index: 2}
+
+.background { background-image:url("../assets/R(1).png");position:absolute; inset: 0; background-repeat:no-repeat;
+              background-size:100% 100%;background-attachment: scroll;opacity: 0.6;z-index: -1; }
+
+img {margin-right: 10px}
+
+h1 { color: white; text-align: center; }
+
 </style>
