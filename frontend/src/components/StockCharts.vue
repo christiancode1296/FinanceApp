@@ -1,16 +1,17 @@
 
+
+
+<!-- Hier beginnt die HTML - Bearbeitung -->
 <template xmlns="http://www.w3.org/1999/html">
 
+  <div class="all">
 
-
-  <div class="all" style="background-color: black">
-    <div >
+    <div class="header">
+      <img  src="../assets/R.png" style="width: 150px; height: 150px;" />
       <h1 id="ueber">Capital Investments</h1>
     </div>
+
     <div class="background"></div>
-
-    <img  src="../assets/R(1).png" style="width: 150px; height: 150px;" />
-
 
     <div class="search">
       <h2>Stocks Charts</h2>
@@ -41,6 +42,8 @@
 
 </template>
 
+
+<!-- Hier beginnt die JAVA SCRIPT - Bearbeitung -->
 <script>
 import { ref, onMounted, onUnmounted } from "vue";
 
@@ -199,7 +202,7 @@ export default {
               borderColor: '#d40000', // Linienfarbe
               backgroundColor: 'rgba(255,0,0,0.3)', // Fläche unter der Linie
               pointBackgroundColor: '#ffffff', // Punkte
-              fill: false, // Fläche unter der Linie ja nein
+              fill: true, // Fläche unter der Linie ja nein
               borderWidth: 2,
             },
           ],
@@ -244,19 +247,32 @@ export default {
 };
 </script>
 
+
+<!-- Hier beginnt die CSS - Bearbeitung -->
 <style scoped>
 
-.all {position: relative;color : white;z-index: 0 }
+.all {background-color: black; color: white; display: flex; flex-direction: column; align-items: center; padding: 12px; min-height: 100vh; box-sizing: border-box; opacity: 0.6}
+
+
+.header {
+  display: flex;
+  align-items: center;      /* vertikal mittig */
+  justify-content: center;  /* zentriert alles zusammen */
+  position: relative;       /* erlaubt absolute Positionierung vom Logo */
+  height: 500px;
+  }
 
 .chart {position: relative; width: 500px; height: 300px;z-index: 1}
 
 .search {margin: 12px 0; gap:8px; align-items:center;z-index: 2}
 
-.background { background-image:url("../assets/R(1).png");position:absolute; inset: 0; background-repeat:no-repeat;
-              background-size:100% 100%;background-attachment: scroll;opacity: 0.6;z-index: -1; }
+.background { background-image:url("../assets/R.png");position:absolute; inset: 0; background-repeat:no-repeat;
+              background-size: cover;background-attachment: scroll;opacity: 0.6;z-index: -1; background-color: black }
 
 img {margin-right: 10px}
 
 h1 { color: white; text-align: center; }
+
+#ueber { font-size: 36px; margin-bottom: 0; position: static; }
 
 </style>
